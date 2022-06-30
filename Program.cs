@@ -1,4 +1,6 @@
 ﻿using CSCI2910_Lab5.models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Text.Json;
 
 namespace CSCI2910_Lab5
@@ -9,7 +11,8 @@ namespace CSCI2910_Lab5
         {
             //AuthorOperations();  
             //BookOperations();
-            SerializeAll();
+            SerializeAllBooks();
+            DeserializeAuthor();
 
         }
 
@@ -107,7 +110,7 @@ namespace CSCI2910_Lab5
             }
         }
 
-        static void SerializeAll()
+        static void SerializeAllBooks()
         {
             // path to the JSON files
             var root = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.ToString();
@@ -127,7 +130,7 @@ namespace CSCI2910_Lab5
 
             // serialize (write) JSON from the object
             var options2 = new JsonSerializerOptions { WriteIndented = true };
-            string jsonString = JsonSerializer.Serialize(bookList, options2);
+            string jsonString = System.Text.Json.JsonSerializer.Serialize(bookList, options2);
 
             //Console.WriteLine(jsonString);
 
@@ -145,7 +148,45 @@ namespace CSCI2910_Lab5
             }
         }
 
-        
+        static void DeserializeAuthor()
+        {
+            // path to the JSON files
+            var root = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.ToString();
+
+            var outputPath = root + $"{Path.DirectorySeparatorChar}Output";
+
+            string rootPath = FileRoot.GetDefaultDirectory();
+            string databasePath = rootPath + $"{Path.DirectorySeparatorChar}Data{Path.DirectorySeparatorChar}data.db";
+            string fileName = rootPath + $"{Path.DirectorySeparatorChar}Output{Path.DirectorySeparatorChar}test.JSON";
+
+            // create options JSONSerializer must follow
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+
+            // set JSON string to empty and set up streamreader based on data file's path
+            string jsonReadString = string.Empty;
+            var authorList = new List<Author>();
+            using (StreamReader sr = new StreamReader(fileName))
+            {
+                jsonReadString = sr.ReadToEnd();
+            }
+
+            JArray authorArray = JArray.Parse(jsonReadString);
+
+            foreach (var o in authorArray)
+            {
+                authorList.Add(JsonConvert.DeserializeObject<Author>(o.ToString()));
+            }
+
+            QueryBuilder qb = new QueryBuilder(databasePath);
+            using (qb)
+            {
+                foreach(Author author in authorList)
+                {
+                    qb.Insert<Author>(author);
+                }
+            }
+
+        }  
     }
 }
 
