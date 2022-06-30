@@ -48,7 +48,7 @@ namespace CSCI2910_Lab5
                 else
                 {
                     sbValues.Append($"{values[i]}, ");
-                    sbNames.Append($"{names[i]}");
+                    sbNames.Append($"{names[i]}, ");
                 }
             }
 
@@ -128,29 +128,64 @@ namespace CSCI2910_Lab5
             }
         }
 
-        public void Create<T>(T obj)
+        public void Update<T>(T obj) where T : IClassModel
         {
-            //SqliteCommand command = connection.CreateCommand();
-            //command.CommandText = $"CREATE {typeof(T).Name} ({column1} {datatype}, {column2} {datatype});";
-            //command.ExecuteNonQuery();
+            // get the property names of obj
+            PropertyInfo[] properties = typeof(T).GetProperties();
 
-            SqliteCommand command = connection.CreateCommand();
-            command.CommandText = $"CREATE TABLE Test (TestId INTEGER PRIMARY KEY, TestName TEXT, TestNumber INTEGER);";
-            command.ExecuteNonQuery();
-        }
+            // get the values of the properties
+            var values = new List<string>();
+            var names = new List<string>();
+            PropertyInfo property;
 
-        public void Update<T>(T obj)
-        {
-            //string column1 = string.Empty;
-            //string value1 = string.Empty;
-            //string condition = string.Empty;
 
-            //SqliteCommand command = connection.CreateCommand();
-            //command.CommandText = $"update {typeof(T).Name} set {column1} = {value1} where {condition};";
-            //command.ExecuteNonQuery();
+            // loop though collection of properties -- pulling out the name and
+            // value of each and adding it to the corresponding list of strings
+            for (int i = 0; i < properties.Length; i++)
+            {
+                property = properties[i];
+                if (property.PropertyType == typeof(string))
+                {
+                    values.Add("\"" + property.GetValue(obj).ToString() + "\"");
+                }
+                else if (property.PropertyType == typeof(DateTime))
+                {
+                    values.Add("\"" + ((DateTime)property.GetValue(obj)).Year + "-" + 
+                        ((DateTime)property.GetValue(obj)).Month + "-" + 
+                        ((DateTime)property.GetValue(obj)).Day + "\"");
+                }
+                else
+                {
+                    values.Add(property.GetValue(obj).ToString());
+                }
 
-            SqliteCommand command = connection.CreateCommand();
-            command.CommandText = $"UPDATE Test SET TestId = 123, TestName = 'Jacob', TestNumber = 123 WHERE TestId = 1;";
+
+                names.Add(property.Name);
+            }
+
+            StringBuilder sb = new StringBuilder();
+            //StringBuilder sbNames = new StringBuilder();
+
+            for (int i = 0; i < values.Count; i++)
+            {
+                if (i == values.Count - 1)
+                {
+                    sb.Append($"{properties[i].Name} = {values[i]}");
+                }
+                else
+                {
+                    sb.Append($"{properties[i].Name} = {values[i]}, ");
+                }
+            }
+
+            var command = connection.CreateCommand();
+
+            // optional -- help speed or prevent lockout
+            command.CommandType = System.Data.CommandType.Text;
+            command.CommandTimeout = 0;
+
+            // not optional
+            command.CommandText = $"UPDATE {typeof(T).Name} SET {sb} WHERE id = {obj.Id}";
             command.ExecuteNonQuery();
         }
 
