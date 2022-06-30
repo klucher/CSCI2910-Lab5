@@ -1,4 +1,5 @@
 ﻿using CSCI2910_Lab5.models;
+using System.Text.Json;
 
 namespace CSCI2910_Lab5
 {
@@ -7,7 +8,8 @@ namespace CSCI2910_Lab5
         static void Main(string[] args)
         {
             //AuthorOperations();  
-            BookOperations();
+            //BookOperations();
+            SerializeAll();
 
         }
 
@@ -102,6 +104,44 @@ namespace CSCI2910_Lab5
                 qb.Insert(book);
                 BookAuthors hobbit = new BookAuthors(99, 6);
                 qb.Insert(hobbit);
+            }
+        }
+
+        static void SerializeAll()
+        {
+            // path to the JSON files
+            var root = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.ToString();
+            
+            var outputPath = root + $"{Path.DirectorySeparatorChar}Output";
+
+            var bookList = new List<Books>();
+
+            string rootPath = FileRoot.GetDefaultDirectory();
+            string databasePath = rootPath + $"{Path.DirectorySeparatorChar}Data{Path.DirectorySeparatorChar}data.db";
+            QueryBuilder qb = new QueryBuilder(databasePath);
+
+            using (qb)
+            {
+                bookList = qb.ReadAll<Books>();
+            }
+
+            // serialize (write) JSON from the object
+            var options2 = new JsonSerializerOptions { WriteIndented = true };
+            string jsonString = JsonSerializer.Serialize(bookList, options2);
+
+            //Console.WriteLine(jsonString);
+
+            // output to JSON file
+            using (StreamWriter sw = new StreamWriter(outputPath + $"{Path.DirectorySeparatorChar}books.JSON", false))
+            {
+                try
+                {
+                    sw.WriteLine(jsonString);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
             }
         }
 

@@ -1,0 +1,56 @@
+[
+  {
+    "Id": 1,
+    "Title": "Oathbringer",
+    "Isbn": "3389364774684",
+    "DateOfPublication": "11/14/2017"
+  },
+  {
+    "Id": 2,
+    "Title": "The Crippled God",
+    "Isbn": "1245371274233",
+    "DateOfPublication": "02/15/2011"
+  },
+  {
+    "Id": 3,
+    "Title": "The Blade Itself",
+    "Isbn": "7835427129275",
+    "DateOfPublication": "05/04/2006"
+  },
+  {
+    "Id": 4,
+    "Title": "Once and future king",
+    "Isbn": "1684167194145",
+    "DateOfPublication": "00/00/1958"
+  },
+  {
+    "Id": 5,
+    "Title": "The Gunslinger",
+    "Isbn": "5728111738758",
+    "DateOfPublication": "06/10/1982"
+  },
+  {
+    "Id": 6,
+    "Title": "The Lord of the Rings",
+    "Isbn": "2236668943814",
+    "DateOfPublication": "07/29/1954"
+  },
+  {
+    "Id": 7,
+    "Title": "A Game of Thrones",
+    "Isbn": "4625851952942",
+    "DateOfPublication": "08/01/1996"
+  },
+  {
+    "Id": 8,
+    "Title": "The Color of Magic",
+    "Isbn": "3826254636768",
+    "DateOfPublication": "11/24/1983"
+  },
+  {
+    "Id": 99,
+    "Title": "The Hobbit",
+    "Isbn": "1111111111111",
+    "DateOfPublication": "11/11/1111"
+  }
+]

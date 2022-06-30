@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <Folder Include="data\" />
+    <Folder Include="Output\" />
   </ItemGroup>
 
   <ItemGroup>
